@@ -41,10 +41,39 @@ violations_monthly = filtered.set_index("InspectionDate").resample("M").size()
 fig1 = px.line(violations_monthly, labels={"value": "Violations", "InspectionDate": "Date"}, title="Monthly Violations")
 st.plotly_chart(fig1, use_container_width=True)
 
-# Top ZIPs
+# Top ZIPs (Clean vertical bar chart with categorical ZIPs)
 st.markdown("### 🗺️ Top ZIP Codes by Violation Count")
-top_zips = filtered['Zip'].value_counts().nlargest(10)
-fig2 = px.bar(top_zips, title="Top 10 ZIPs", labels={"value": "Violations", "index": "ZIP Code"})
+
+# Force ZIP codes to be strings
+filtered['Zip'] = filtered['Zip'].astype(str)
+
+# Get top 10 ZIPs and assign column names clearly
+top_zips = (
+    filtered['Zip']
+    .value_counts()
+    .nlargest(10)
+    .reset_index()
+)
+top_zips.columns = ['Zip', 'Violations']
+
+# Build the figure
+fig2 = px.bar(
+    top_zips,
+    x='Zip',
+    y='Violations',
+    labels={'Zip': 'ZIP Code', 'Violations': 'Violations'},
+    title="Top 10 ZIP Codes by Violation Count"
+)
+
+fig2.update_layout(
+    xaxis_type='category',   # Force discrete axis
+    xaxis_title='ZIP Code',
+    yaxis_title='Violations',
+    title_x=0.5,
+    height=450,
+    bargap=0.2
+)
+
 st.plotly_chart(fig2, use_container_width=True)
 
 # Violation Class Breakdown
