@@ -1,0 +1,9 @@
+# Ignore large and generated files
+cleaned_inspections.csv
+inspections.csv
+*.parquet
+*.xlsx
+*.ipynb_checkpoints/
+__pycache__/
+.env
+.DS_Store
